@@ -1,10 +1,14 @@
-import ROOT
-import math
-from DataFormats.FWLite import Events,Handle
+import ROOT # provides ROOT
+import math # provides fabs
+from DataFormats.FWLite import Events,Handle # cmssw 
+##### collections
 genPartsLabel  = "genParticles"
 genPartsHandle = Handle("vector<reco::GenParticle>")
+##
+##### histos
 genMuonsPtHist = ROOT.TH1D("genMuonsPtHist","genMuonsPtHist",200,0,200)
-####
+##
+#### input
 events = Events([
 	'dcap://grid-dcap-extern.physik.rwth-aachen.de/pnfs/physik.rwth-aachen.de/cms//store/mc/Summer12_DR53X/TTTT_TuneZ2star_8TeV-madgraph-tauola/AODSIM/PU_S10_START53_V7A-v1/00000/146A413C-CA0A-E211-B5F3-002590147CA2.root',
 	'dcap://grid-dcap-extern.physik.rwth-aachen.de/pnfs/physik.rwth-aachen.de/cms/store/mc/Summer12_DR53X/TTTT_TuneZ2star_8TeV-madgraph-tauola/AODSIM/PU_S10_START53_V7A-v1/00000/2C53DD3D-9F0A-E211-9C6B-001E67396E0A.root',
@@ -13,7 +17,7 @@ events = Events([
 	]) #part of /TTTT_TuneZ2star_8TeV-madgraph-tauola/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM 
 maxEvents = 1000
 ###
-
+##### event processing
 for i,event in enumerate(events):
   if i >= maxEvents:
     break
@@ -24,6 +28,7 @@ for i,event in enumerate(events):
       genMuonsPtHist.Fill(part.pt())
   if i%100 == 0:
     print "processed ",i+1," events"
-##############
+##
+##### saving hists to files
 genMuonsPtHist.SaveAs(genMuonsPtHist.GetName()+'.root')
 
