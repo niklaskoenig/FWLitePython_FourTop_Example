@@ -1,0 +1,19 @@
+##### drawing hists in ROOT:
+import ROOT
+file_muLeptons = ROOT.TFile("genmuLeptonsPtHist.root")
+file_muLeptonsCutoff = ROOT.TFile("genmuLeptonsPtHistCutoff.root")
+hist_muLeptons = file_muLeptons.Get("genmuLeptonsPtHist")
+hist_muLeptonsCutoff = file_muLeptonsCutoff.Get("genmuLeptonsPtHistCutoff")
+leg_L = ROOT.TLegend(0.7,0.77,0.85,0.55)
+leg_L.SetFillColor(0)
+leg_L.AddEntry(hist_muLeptons,"p_T","l")
+leg_L.AddEntry(hist_muLeptonsCutoff,"p_T (cutoff)","l")
+leg_L.SetTextSize(0.037)
+hist_muLeptons.SetAxisRange(0, 50, "Y")
+hist_muLeptons.SetLineColor(ROOT.kRed)
+hist_muLeptonsCutoff.SetLineColor(ROOT.kGreen)
+cv_Leptons = ROOT.TCanvas("cL")
+hist_muLeptons.DrawNormalized("")
+hist_muLeptonsCutoff.DrawNormalized("sames")
+leg_L.Draw("sames")
+

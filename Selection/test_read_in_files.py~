@@ -1,0 +1,35 @@
+import ROOT # provides ROOT
+import math # provides fabs
+from DataFormats.FWLite import Events,Handle # cmssw 
+##### collections
+genPartsLabel  = "genParticles"
+genPartsHandle = Handle("vector<reco::GenParticle>")
+
+#### Reading in files
+TTJetsFiles = open('TTJetsMCdilep.txt')
+files=TTJetsFiles.readlines()
+TTJetsFiles=[]
+for f in files:
+  TTJetsFiles.append ('dcap://grid-dcap-extern.physik.rwth-aachen.de/pnfs/physik.rwth-aachen.de/cms'+f.rstrip('\n'))
+
+events = Events(TTJetsFiles)
+maxEvents = 1000
+#### histos
+genmuLeptonsPtHist = ROOT.TH1D("genmuLeptonsPtHist","p_T(#mu)",40,0,200)
+
+##### event processing
+for i,event in enumerate(events):
+  if i >= maxEvents:
+    break
+  event.getByLabel(genPartsLabel,genPartsHandle)
+  genParts = genPartsHandle.product()
+  for part in genParts:
+    if part.status() == 3 and math.fabs(part.pdgId()) == 13 and math.fabs(part.mother().pdgId()) == 24: # selecting only taus with status 3 (matrix element particles)
+      	gentauLeptonsPtHist.Fill(part.pt())
+  if i%100 == 0:
+    print "processed ",i+1," events"
+##
+##### saving hists to files
+genmuLeptonsPtHist.SaveAs(genmuLeptonsPtHist.GetName()+'.root')
+
+
